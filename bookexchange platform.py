@@ -7,22 +7,22 @@ bookInfo = {}
 # Key: bookname, Value: how many in the exchange
 bookCount = {}
 
-def createAccount(loginDict):
-    username = input("What username do you want to use?")
+def createAccount():
+    username = input("What username do you want to use? ")
     if username in loginDict:
         print("Username is already taken.")
     else:
-        password = input("What password would you like to use?")
+        password = input("What password would you like to use? ")
         loginDict[username] = password
         usersBooks[username] = []
 
-def login(loginDict):
-    username = input("what is your username?")
+def login():
+    username = input("what is your username? ")
     if username not in loginDict:
         print("Username does not exist")
         return None
     else:
-        password = input("What is your password")
+        password = input("What is your password? ")
         if password == loginDict[username]:
             print("You are logged in.")
             return username
@@ -47,7 +47,10 @@ def removeBook(bookName):
 
 # Function to give a user a book
 def giveBook(userName, bookName):
-    usersBooks[userName].append(bookName)
+    if bookName in bookCount:
+        usersBooks[userName].append(bookName)
+    else:
+        print(bookName + ' needs to be added first.')
 
 # Function to get a user's list of books
 def getUsersBooks(userName):
@@ -63,7 +66,35 @@ def takeBook(userName, bookName):
 def insertBookInfo(bookName, author, genre):
     bookInfo[bookName] = (author, genre)
 
-# Returns info in a tuple containing author and genre (Author, Genre)
+# Function to get a book's info in the form (Author, Genre)
 def getBookInfo(bookName):
     if bookName in bookInfo:
         return bookInfo[bookName]
+    else:
+        return None
+    
+# Function to get a book's count
+def getBookCount(bookName):
+    if bookName in bookCount:
+        return bookCount[bookName]
+    else:
+        return 0
+
+if __name__ == '__main__':
+    createAccount()
+    username = login()
+    book = input('Enter a book name: ')
+    addBook(book)
+    print('Count of ' + book + ': ' + str(bookCount[book]))
+    removeBook(book)
+    print('After removing ' + book + ', its count is: ' + str(getBookCount(book)))
+    book = input('Enter another book name: ')
+    addBook(book)
+    giveBook(username, book)
+    print(username + '\'s books: '+ str(getUsersBooks(username)))
+    takeBook(username, book)
+    print('After taking out ' + username + '\'s book, their list of books are: ' + str(getUsersBooks(username)))
+    author = input('Enter ' + book + '\'s author: ')
+    genre = input('Enter ' + book + '\'s genre: ')
+    insertBookInfo(book, author, genre)
+    print(book + '\'s info: ' + str(getBookInfo(book)))
